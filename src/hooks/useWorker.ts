@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import { RequestHandler, SetupWorker, StartOptions, setupWorker } from 'msw';
+import { RequestHandler } from "msw";
+import { SetupWorker, StartOptions, setupWorker } from "msw/browser";
 
-import { inferOptions } from '../types';
-import { mapHandlersToSetup } from '../utils';
+import { inferOptions } from "../types";
+import { mapHandlersToSetup } from "../utils";
 
 interface UseWorkerConfig<O extends Record<string, string>> {
   startOptions?: StartOptions;
@@ -20,7 +21,7 @@ export const useWorker = <
       responses: Record<string, unknown>;
     }
   >,
-  O extends inferOptions<H>,
+  O extends inferOptions<H>
 >(
   handlers: H,
   selectedOptions: O,
@@ -36,19 +37,21 @@ export const useWorker = <
   // Store the config in a ref so the useEffect below that starts
   // the worker runs only once, yet reads the latest config values
   // as they change in the devtools.
+  // biome-ignore lint/correctness/useExhaustiveDependencies:
   useEffect(() => {
     if (workerInitialised.current !== false && enabled) {
       optionsRef.current = selectedOptions;
 
-      onHandlerUpdate && onHandlerUpdate(selectedOptions);
+      onHandlerUpdate?.(selectedOptions);
     }
   }, [selectedOptions, enabled]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:
   useEffect(() => {
     const startWorker = async () => {
       await workerRef.current?.start({
         ...startOptions,
-        serviceWorker: { url: '/apiMockServiceWorker.js' },
+        serviceWorker: { url: "/apiMockServiceWorker.js" },
       });
       setIsReady(true);
       onHandlerUpdate && onHandlerUpdate(selectedOptions);
@@ -59,11 +62,12 @@ export const useWorker = <
     }
     if (workerInitialised.current && !enabled && prevEnabled.current === true) {
       prevEnabled.current = false;
-      onHandlerUpdate && onHandlerUpdate(selectedOptions);
+      onHandlerUpdate?.(selectedOptions);
       workerRef.current?.stop();
     }
   }, [enabled]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies:
   useEffect(() => {
     if (workerInitialised.current === false) {
       workerRef.current = setupWorker(

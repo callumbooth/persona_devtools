@@ -1,0 +1,49 @@
+{
+  "name": "persona_devtools",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "leva": "^0.9.35",
+    "lucide-react": "^0.316.0",
+    "msw": "^2.1.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "usehooks-ts": "^2.10.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@types/node": "^20.11.7",
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8",
+    "vitest": "^1.2.1"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/persona_devtools.umd.cjs",
+  "module": "./dist/persona_devtools.js",
+  "exports": {
+    ".": {
+      "import": "./dist/persona_devtools.js",
+      "require": "./dist/persona_devtools.umd.cjs"
+    }
+  }
+}

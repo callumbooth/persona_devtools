@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { CodeSquare02 } from '@untitled-ui/icons-react';
+import { CodeSquare } from 'lucide-react';
 import { Leva, useControls, button } from 'leva';
 import { Schema, SchemaToValues } from 'leva/src/types/public';
 import { RequestHandler } from 'msw';
@@ -13,6 +13,7 @@ import {
   StringKeys,
   inferOptions,
 } from './types';
+
 
 const DexoryDevTools = <
   Keys,
@@ -205,7 +206,7 @@ const DexoryDevTools = <
   return (
     <>
       <button onClick={() => enable((prev) => !prev)}>
-        <CodeSquare02 />
+        <CodeSquare />
       </button>
       <Leva hidden={!enabled} />
     </>

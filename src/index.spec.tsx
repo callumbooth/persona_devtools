@@ -114,9 +114,7 @@ describe("Devtools", () => {
 
 	it.todo("should update the selected persona if the url contains a persona");
 
-	it.todo(
-		"should update the selected persona if session storage has a persona",
-	);
+	it.todo("should update the selected persona if session storage has a persona");
 
 	it.todo(
 		"should update the selected persona to the correct persona if the url and session storage contains a persona",
@@ -142,9 +140,7 @@ describe("Devtools", () => {
 
 	it.todo("should not update the additional if the persona is not custom");
 
-	it.todo(
-		"should call onAdditionalUpdate callback when additionalData changes",
-	);
+	it.todo("should call onAdditionalUpdate callback when additionalData changes");
 
 	it.todo(
 		"should call onHandlerUpdate callback when handler changes and devtools is enabled",

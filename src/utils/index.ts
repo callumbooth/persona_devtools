@@ -70,9 +70,7 @@ export const mapHandlersToSetup = <
 	optionsRef: React.MutableRefObject<inferOptions<H>>,
 ) => {
 	return (Object.keys(handlers) as StringKeys<H>[]).map((handlersKey) => {
-		return handlers[handlersKey].handler(() =>
-			getValue(handlersKey, optionsRef),
-		);
+		return handlers[handlersKey].handler(() => getValue(handlersKey, optionsRef));
 	});
 };
 

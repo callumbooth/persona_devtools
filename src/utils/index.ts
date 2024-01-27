@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return, @typescript-eslint/no-explicit-any */
-import { RequestHandler } from "msw";
+import { HttpHandler, RequestHandler } from "msw";
 
+import { HookReturnType } from "leva/dist/declarations/src/useControls";
+import { Schema } from "leva/src/types";
 import { StringKeys, inferOptions } from "../types";
 
 export const isValidKey = <T extends Record<string, unknown>>(
@@ -46,8 +48,33 @@ export const withOption = <T, C extends Record<string, unknown>>(
 	};
 };
 
+export const withOptions = <T, C extends Schema>(
+	config: C,
+	cb: (getValues: () => HookReturnType<C, C>) => T,
+) => {
+	const options = Object.keys(config) as unknown as (keyof C)[];
+
+	return {
+		options: options.reduce(
+			(acc, curr) => {
+				const option = config[curr];
+				acc[curr] = {
+					options: option,
+				};
+				return acc;
+			},
+			{} as {
+				[K in keyof C]: {
+					options: C[K];
+				};
+			},
+		),
+		handler: (getValue: () => HookReturnType<C, C>) => cb(getValue),
+	};
+};
+
 const getValue = <
-	C extends Record<string, string>,
+	C extends Record<string, HookReturnType<Schema, Schema>>,
 	T extends React.MutableRefObject<C>,
 >(
 	key: keyof C,
@@ -56,18 +83,35 @@ const getValue = <
 	return config.current[key];
 };
 
+// export const mapHandlersToSetup = <
+// 	H extends {
+// 		[Key in keyof Keys]: {
+// 			handler: (getValue: () => H[Key]["options"][number]) => RequestHandler;
+// 			options: readonly string[];
+// 			responses: Record<string, any>;
+// 		};
+// 	},
+// 	Keys,
+// >(
+// 	handlers: H,
+// 	optionsRef: React.MutableRefObject<inferOptions<H>>,
+// ) => {
+// 	return (Object.keys(handlers) as StringKeys<H>[]).map((handlersKey) => {
+// 		return handlers[handlersKey].handler(() => getValue(handlersKey, optionsRef));
+// 	});
+// };
+
 export const mapHandlersToSetup = <
 	H extends {
 		[Key in keyof Keys]: {
-			handler: (getValue: () => H[Key]["options"][number]) => RequestHandler;
-			options: readonly string[];
-			responses: Record<string, any>;
+			handler: (getValue: () => any) => HttpHandler;
+			options: Record<string, Schema>;
 		};
 	},
 	Keys,
 >(
 	handlers: H,
-	optionsRef: React.MutableRefObject<inferOptions<H>>,
+	optionsRef: React.MutableRefObject<any>,
 ) => {
 	return (Object.keys(handlers) as StringKeys<H>[]).map((handlersKey) => {
 		return handlers[handlersKey].handler(() => getValue(handlersKey, optionsRef));

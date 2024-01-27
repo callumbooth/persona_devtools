@@ -51,7 +51,7 @@ export const useWorker = <
 		const startWorker = async () => {
 			await workerRef.current?.start({
 				...startOptions,
-				serviceWorker: { url: "/apiMockServiceWorker.js" },
+				serviceWorker: { url: "/mockServiceWorker.js" },
 			});
 			setIsReady(true);
 			onHandlerUpdate && onHandlerUpdate(selectedOptions);
@@ -70,7 +70,9 @@ export const useWorker = <
 	// biome-ignore lint/correctness/useExhaustiveDependencies:
 	useEffect(() => {
 		if (workerInitialised.current === false) {
-			workerRef.current = setupWorker(...mapHandlersToSetup(handlers, optionsRef));
+			const mappedHandlers = mapHandlersToSetup(handlers, optionsRef);
+			console.log(mappedHandlers);
+			workerRef.current = setupWorker(...mappedHandlers);
 
 			workerInitialised.current = true;
 		}

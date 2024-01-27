@@ -19,10 +19,33 @@ export type PersonaConfig<H> = {
 	readonly [key: string]: {
 		label: string;
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		user: Record<string, any>;
+		user?: Record<string, any>;
 		options: H;
 	};
 };
+
+// export interface DexoryDevToolsProps<
+// 	Keys,
+// 	H extends {
+// 		[Key in keyof Keys]: {
+// 			handler: (getValue: () => H[Key]["options"][number]) => RequestHandler;
+// 			options: readonly string[];
+// 			responses: Record<string, unknown>;
+// 		};
+// 	},
+// 	P extends PersonaConfig<inferOptions<H>>,
+// 	AD extends Schema = Schema,
+// > {
+// 	onPersonaUpdate: (persona: P[keyof P]["user"]) => void;
+// 	personas: P;
+// 	defaultPersona: StringKeys<P>;
+// 	handlers: H;
+// 	onHandlerUpdate?: (options: inferOptions<H>) => void;
+// 	startOptions?: StartOptions;
+// 	additionalOptions?: AD;
+// 	onAdditionalUpdate?: (data: SchemaToValues<AD>) => void;
+// 	initialIsEnabled?: boolean;
+// }
 
 export interface DexoryDevToolsProps<
 	Keys,
@@ -33,17 +56,10 @@ export interface DexoryDevToolsProps<
 			responses: Record<string, unknown>;
 		};
 	},
-	P extends PersonaConfig<inferOptions<H>>,
-	AD extends Schema = Schema,
 > {
-	onPersonaUpdate: (persona: P[keyof P]["user"]) => void;
-	personas: P;
-	defaultPersona: StringKeys<P>;
 	handlers: H;
 	onHandlerUpdate?: (options: inferOptions<H>) => void;
 	startOptions?: StartOptions;
-	additionalOptions?: AD;
-	onAdditionalUpdate?: (data: SchemaToValues<AD>) => void;
 	initialIsEnabled?: boolean;
 }
 

@@ -1,19 +1,14 @@
 {
-	"name": "persona_devtools",
-	"version": "0.0.1",
-	"description": "",
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"scripts": {
-		"format": "biome format --write ./package ./examples",
-		"lint": "biome lint ./package ./examples",
-		"lint:tsc": "tsc",
-		"check:ci": "biome ci ./package ./examples"
-	},
-	"dependencies": {},
-	"devDependencies": {
-		"@biomejs/biome": "1.5.3",
-		"typescript": "^5.2.2"
-	}
+  "private": true,
+  "scripts": {
+    "format": "biome format --write ./package ./examples",
+    "lint": "biome lint ./package ./examples",
+    "lint:tsc": "tsc",
+    "check:ci": "biome ci ./package ./examples"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@biomejs/biome": "1.5.3",
+    "typescript": "^5.2.2"
+  }
 }

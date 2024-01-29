@@ -1,5 +1,5 @@
+import { mapHandlersToSetup, withOptions } from "@/src/main";
 import { http, HttpResponse, passthrough } from "msw";
-import { mapHandlersToSetup, withOption, withOptions } from "../../../src/main";
 import { Todo } from "../api/todo/types";
 
 const data: Record<string, Todo> = {

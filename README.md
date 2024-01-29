@@ -9,4 +9,6 @@
     2. Add handlers
     3. Setup vitest (optional)
 2. Configure devtools
-3. Configure personas
+3. Configure handlers
+4. Configure faker
+

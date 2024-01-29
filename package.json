@@ -9,14 +9,15 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "format": "biome format --write ./src ./example",
-    "lint": "biome lint ./src ./example",
+    "format": "biome format --write ./src ./examples",
+    "lint": "biome lint ./src ./examples",
     "lint:tsc": "tsc",
-    "check:ci": "biome ci ./src ./example"
+    "check:ci": "biome ci ./src ./examples"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.17.19",
     "axios": "^1.6.7",
+    "date-fns": "^3.3.1",
     "dexie": "^3.2.4",
     "leva": "^0.9.35",
     "lucide-react": "^0.316.0",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
+    "@faker-js/faker": "^8.4.0",
     "@testing-library/react": "^14.1.2",
     "@types/node": "^20.11.7",
     "@types/react": "^18.2.43",
@@ -34,6 +36,7 @@
     "@vitejs/plugin-react-swc": "^3.5.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
+    "vite-tsconfig-paths": "^4.3.1",
     "vitest": "^1.2.1"
   },
   "type": "module",

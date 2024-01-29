@@ -254,13 +254,14 @@ const DexoryDevTools = <
 }: DexoryDevToolsProps<Keys, H>) => {
 	const [, copy] = useCopyToClipboard();
 
+	const persistedDataHydrated = useRef(false);
 	const params = new URLSearchParams(window.location.search);
 	const urlConfig = params.get("dvdt");
 	const parsedUrlConfig = urlConfig && JSON.parse(urlConfig);
 
 	const handlerKeys = Object.keys(handlers) as StringKeys<Keys>[];
 
-	const [handlerData] = useControls(
+	const [handlerData, setHandlerData] = useControls(
 		"handlers",
 		() =>
 			parsedUrlConfig ||
@@ -294,6 +295,16 @@ const DexoryDevTools = <
 			}, {} as Schema),
 	);
 
+	const [persistedData, setSettings] = useSessionStorage<
+		| {
+				enabled: boolean;
+				handlers: {
+					[x: string]: any;
+				};
+		  }
+		| undefined
+	>("dvdt", undefined);
+
 	useControls(
 		{
 			"Share URL": button(() => {
@@ -313,11 +324,6 @@ const DexoryDevTools = <
 		[handlerData],
 	);
 
-	const [persistedData, setSettings] = useSessionStorage("dvdt", {
-		enabled: !!urlConfig,
-		handlers: mapSelectedOptions(handlerData),
-	});
-
 	useWorker(
 		handlers,
 		handlerData as inferOptions<H>,
@@ -325,8 +331,20 @@ const DexoryDevTools = <
 			onHandlerUpdate,
 			startOptions,
 		},
-		persistedData.enabled,
+		persistedData?.enabled ?? false,
 	);
+
+	useEffect(() => {
+		if (
+			persistedData !== undefined &&
+			parsedUrlConfig === undefined &&
+			persistedDataHydrated.current === false
+		) {
+			console.log("hydrating handler data");
+			setHandlerData(persistedData.handlers);
+			persistedDataHydrated.current = true;
+		}
+	}, [persistedData, setHandlerData, parsedUrlConfig]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: Only run once on initialize
 	useEffect(() => {
@@ -335,22 +353,36 @@ const DexoryDevTools = <
 
 			newUrl.searchParams.delete("dvdt");
 
-			setSettings({ enabled: true, handlers: parsedUrlConfig });
+			// setSettings({ enabled: true, handlers: parsedUrlConfig });
 			window.history.replaceState(history.state, "", newUrl);
 		}
 	}, []);
+
+	useEffect(() => {
+		if (handlerData && persistedDataHydrated.current === true) {
+			setSettings((prev) =>
+				prev === undefined
+					? { enabled: false, handlers: handlerData }
+					: { ...prev, handlers: handlerData },
+			);
+		}
+	}, [handlerData, setSettings]);
 
 	return (
 		<>
 			<button
 				type="button"
 				onClick={() => {
-					setSettings((prev) => ({ ...prev, enabled: !prev.enabled }));
+					setSettings((prev) => {
+						return prev === undefined
+							? { enabled: false, handlers: handlerData }
+							: { ...prev, enabled: !prev.enabled };
+					});
 				}}
 			>
 				<CodeSquare />
 			</button>
-			<Leva hidden={!persistedData.enabled} />
+			<Leva hidden={!persistedData?.enabled ?? false} />
 		</>
 	);
 };

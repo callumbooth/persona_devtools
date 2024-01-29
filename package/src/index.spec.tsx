@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { render } from "@testing-library/react";
 
-import DexoryDevTools from "./";
+import DexoryDevTools from ".";
 import { DexoryDevToolsProps } from "./types";
 import { withOption } from "./utils";
 

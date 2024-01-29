@@ -20,8 +20,12 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
 
-    "types": ["vitest/globals"],
+    "baseUrl": ".",
+    "paths": {
+      "seed-utils": ["./src/test/seed-utils.ts"],
+      "@/*": ["./*"],
+    },
   },
-  "include": ["src", "examples"],
+  "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

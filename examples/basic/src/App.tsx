@@ -1,5 +1,5 @@
-import { PersonaDevTools } from "@/src/main";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
+import { PersonaDevTools } from "persona_devtools";
 import "./App.css";
 
 import { useGetTodos, usePostTodo } from "./api/todo/todo";
@@ -40,7 +40,7 @@ const Homepage = () => {
 		<>
 			<h1>Vite + React</h1>
 
-			<h2>Todos</h2>
+			<h2>Todos - base example</h2>
 			<Todos />
 
 			<PersonaDevTools

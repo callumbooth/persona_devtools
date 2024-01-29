@@ -1,18 +1,31 @@
+import { HookReturnType } from "leva/dist/declarations/src/useControls";
 import { Schema, SchemaToValues } from "leva/src/types/public";
-import { RequestHandler } from "msw";
+import { HttpHandler, RequestHandler } from "msw";
 import { StartOptions } from "msw/browser";
+
+// export type inferOptions<
+// 	T extends Record<
+// 		string,
+// 		{
+// 			options: readonly string[];
+// 			responses: Record<string, unknown>;
+// 			handler: unknown;
+// 		}
+// 	>,
+// > = {
+// 	[Key in keyof T]: T[Key]["options"][number];
+// };
 
 export type inferOptions<
 	T extends Record<
 		string,
 		{
-			options: readonly string[];
-			responses: Record<string, unknown>;
+			options: Schema;
 			handler: unknown;
 		}
 	>,
 > = {
-	[Key in keyof T]: T[Key]["options"][number];
+	[Key in keyof T]: HookReturnType<T[Key]["options"], T[Key]["options"]>;
 };
 
 export type PersonaConfig<H> = {
@@ -51,9 +64,8 @@ export interface DexoryDevToolsProps<
 	Keys,
 	H extends {
 		[Key in keyof Keys]: {
-			handler: (getValue: () => H[Key]["options"][number]) => RequestHandler;
-			options: readonly string[];
-			responses: Record<string, unknown>;
+			handler: (getValue: () => unknown) => HttpHandler;
+			options: Schema;
 		};
 	},
 > {

@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 
-import { RequestHandler } from "msw";
+import { http, HttpHandler, passthrough } from "msw";
 import { SetupWorker, StartOptions, setupWorker } from "msw/browser";
 
+import { Schema } from "leva/src/types";
 import { inferOptions } from "../types";
-import { mapHandlersToSetup } from "../utils";
+import { mapHandlersToSetup, mapSelectedOptions } from "../utils";
 
-interface UseWorkerConfig<O extends Record<string, string>> {
+interface UseWorkerConfig<O extends Record<string, Schema>> {
 	startOptions?: StartOptions;
 	onHandlerUpdate?: (options: O) => void;
 }
@@ -16,9 +17,8 @@ export const useWorker = <
 	H extends Record<
 		string,
 		{
-			handler: (getValue: () => string) => RequestHandler;
-			options: readonly string[];
-			responses: Record<string, unknown>;
+			options: Schema;
+			handler: (getValue: () => unknown) => HttpHandler;
 		}
 	>,
 	O extends inferOptions<H>,
@@ -29,7 +29,7 @@ export const useWorker = <
 	enabled: boolean,
 ) => {
 	const workerRef = useRef<SetupWorker>();
-	const optionsRef = useRef(selectedOptions);
+	const optionsRef = useRef(mapSelectedOptions(selectedOptions) as O);
 	const workerInitialised = useRef(false);
 	const prevEnabled = useRef(enabled);
 	const [isReady, setIsReady] = useState(false);
@@ -40,9 +40,10 @@ export const useWorker = <
 	// biome-ignore lint/correctness/useExhaustiveDependencies:
 	useEffect(() => {
 		if (workerInitialised.current !== false && enabled) {
-			optionsRef.current = selectedOptions;
+			const mapped = mapSelectedOptions(selectedOptions) as O;
+			optionsRef.current = mapped;
 
-			onHandlerUpdate?.(selectedOptions);
+			onHandlerUpdate?.(mapped);
 		}
 	}, [selectedOptions, enabled]);
 
@@ -67,12 +68,24 @@ export const useWorker = <
 		}
 	}, [enabled]);
 
+	useEffect(() => {
+		if (workerRef.current) {
+			const mappedHandlers = mapHandlersToSetup(handlers, optionsRef);
+
+			workerRef.current.resetHandlers(
+				...[...mappedHandlers, http.get("*", () => passthrough())],
+			);
+		}
+	}, [handlers]);
+
 	// biome-ignore lint/correctness/useExhaustiveDependencies:
 	useEffect(() => {
 		if (workerInitialised.current === false) {
 			const mappedHandlers = mapHandlersToSetup(handlers, optionsRef);
-			console.log(mappedHandlers);
-			workerRef.current = setupWorker(...mappedHandlers);
+
+			workerRef.current = setupWorker(
+				...[...mappedHandlers, http.get("*", () => passthrough())],
+			);
 
 			workerInitialised.current = true;
 		}

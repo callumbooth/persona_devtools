@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Leva, button, folder, useControls } from "leva";
 import { Schema, SchemaToValues } from "leva/src/types/public";
 import { CodeSquare } from "lucide-react";
-import { RequestHandler } from "msw";
+import { HttpHandler, RequestHandler } from "msw";
 import { useCopyToClipboard, useSessionStorage } from "usehooks-ts";
 
 import { useWorker } from "./hooks/useWorker";
@@ -13,6 +13,7 @@ import {
 	StringKeys,
 	inferOptions,
 } from "./types";
+import { mapSelectedOptions } from "./utils";
 
 // const DexoryDevTools = <
 // 	Keys,
@@ -242,9 +243,8 @@ const DexoryDevTools = <
 	Keys,
 	H extends {
 		[Key in keyof Keys]: {
-			handler: (getValue: () => H[Key]["options"][number]) => RequestHandler;
-			options: readonly string[];
-			responses: Record<string, unknown>;
+			handler: (getValue: () => unknown) => HttpHandler;
+			options: Schema;
 		};
 	},
 >({
@@ -252,47 +252,71 @@ const DexoryDevTools = <
 	onHandlerUpdate,
 	startOptions,
 }: DexoryDevToolsProps<Keys, H>) => {
-	const things = useControls("testing", {
-		foo: { options: { a: "do A", b: "do B" } },
-	});
+	const [, copy] = useCopyToClipboard();
 
 	const params = new URLSearchParams(window.location.search);
 	const urlConfig = params.get("dvdt");
+	const parsedUrlConfig = urlConfig && JSON.parse(urlConfig);
 
 	const handlerKeys = Object.keys(handlers) as StringKeys<Keys>[];
 
-	const [enabled, enable] = useState(false);
-
-	const [handlerData, setHandlerOptions] = useControls<
-		any,
+	const [handlerData] = useControls(
 		"handlers",
-		() => any
-	>("handlers", () =>
-		handlerKeys.reduce((acc, key) => {
-			const handlerOptions = handlers[key].options;
-			const handlerOptionsKeys = Object.keys(handlerOptions);
+		() =>
+			parsedUrlConfig ||
+			handlerKeys.reduce((acc, key) => {
+				const handlerOptions = handlers[key].options;
+				const handlerOptionsKeys = Object.keys(handlerOptions);
 
-			acc[key] = folder({
-				[`${key}_passthrough`]: { value: false, label: "passthrough" },
-				...handlerOptionsKeys.reduce((acc2, optionKey) => {
-					if (typeof handlerOptions[optionKey].options === "object") {
-						acc2[optionKey] = {
-							...handlerOptions[optionKey].options,
-							render: (get) => get(`handlers.${key}.${key}_passthrough`) === false,
-						};
-					} else {
-						acc2[optionKey] = {
-							value: handlerOptions[optionKey].options,
-							render: (get) => get(`handlers.${key}.${key}_passthrough`) === false,
-						};
-					}
-					return acc2;
-				}, {} as Schema),
-			});
+				acc[key] = folder({
+					[`${key}-passthrough`]: { value: false, label: "passthrough" },
+					...handlerOptionsKeys.reduce((acc2, optionKey) => {
+						const data = handlerOptions[optionKey];
 
-			return acc;
-		}, {} as Schema),
+						if (typeof data === "object") {
+							acc2[`${key}-${optionKey}`] = {
+								label: optionKey,
+								...data,
+								render: (get) => get(`handlers.${key}.${key}-passthrough`) === false,
+							};
+						} else {
+							acc2[`${key}-${optionKey}`] = {
+								label: optionKey,
+								value: data,
+								render: (get) => get(`handlers.${key}.${key}-passthrough`) === false,
+							};
+						}
+						return acc2;
+					}, {} as Schema),
+				});
+
+				return acc;
+			}, {} as Schema),
 	);
+
+	useControls(
+		{
+			"Share URL": button(() => {
+				const baseUrl = window.location.origin + window.location.pathname;
+
+				const config = handlerData;
+
+				const params = new URLSearchParams({
+					dvdt: JSON.stringify(config),
+				});
+
+				console.log(baseUrl + "?" + params.toString());
+
+				void copy(baseUrl + "?" + params.toString());
+			}),
+		},
+		[handlerData],
+	);
+
+	const [persistedData, setSettings] = useSessionStorage("dvdt", {
+		enabled: !!urlConfig,
+		handlers: mapSelectedOptions(handlerData),
+	});
 
 	useWorker(
 		handlers,
@@ -301,15 +325,32 @@ const DexoryDevTools = <
 			onHandlerUpdate,
 			startOptions,
 		},
-		enabled,
+		persistedData.enabled,
 	);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: Only run once on initialize
+	useEffect(() => {
+		if (parsedUrlConfig) {
+			const newUrl = new URL(window.location.toString());
+
+			newUrl.searchParams.delete("dvdt");
+
+			setSettings({ enabled: true, handlers: parsedUrlConfig });
+			window.history.replaceState(history.state, "", newUrl);
+		}
+	}, []);
 
 	return (
 		<>
-			<button type="button" onClick={() => enable((prev) => !prev)}>
+			<button
+				type="button"
+				onClick={() => {
+					setSettings((prev) => ({ ...prev, enabled: !prev.enabled }));
+				}}
+			>
 				<CodeSquare />
 			</button>
-			<Leva hidden={!enabled} />
+			<Leva hidden={!persistedData.enabled} />
 		</>
 	);
 };

@@ -50,26 +50,43 @@ export const withOption = <T, C extends Record<string, unknown>>(
 
 export const withOptions = <T, C extends Schema>(
 	config: C,
-	cb: (getValues: () => HookReturnType<C, C>) => T,
-) => {
-	const options = Object.keys(config) as unknown as (keyof C)[];
+	cb: (
+		getValues: () => HookReturnType<
+			C & {
+				passthrough: boolean;
+			},
+			C & {
+				passthrough: boolean;
+			}
+		>,
+	) => T,
+): {
+	options: C;
+	handler: (
+		getValue: () => HookReturnType<
+			C & {
+				passthrough: boolean;
+			},
+			C & {
+				passthrough: boolean;
+			}
+		>,
+	) => T;
+} => {
+	// const options = Object.keys(config) as unknown as (keyof C)[];
 
 	return {
-		options: options.reduce(
-			(acc, curr) => {
-				const option = config[curr];
-				acc[curr] = {
-					options: option,
-				};
-				return acc;
-			},
-			{} as {
-				[K in keyof C]: {
-					options: C[K];
-				};
-			},
-		),
-		handler: (getValue: () => HookReturnType<C, C>) => cb(getValue),
+		options: config,
+		handler: (
+			getValue: () => HookReturnType<
+				C & {
+					passthrough: boolean;
+				},
+				C & {
+					passthrough: boolean;
+				}
+			>,
+		) => cb(getValue),
 	};
 };
 
@@ -104,14 +121,14 @@ const getValue = <
 export const mapHandlersToSetup = <
 	H extends {
 		[Key in keyof Keys]: {
-			handler: (getValue: () => any) => HttpHandler;
-			options: Record<string, Schema>;
+			options: Schema;
+			handler: (getValue: () => unknown) => HttpHandler;
 		};
 	},
 	Keys,
 >(
 	handlers: H,
-	optionsRef: React.MutableRefObject<any>,
+	optionsRef: React.MutableRefObject<inferOptions<H>>,
 ) => {
 	return (Object.keys(handlers) as StringKeys<H>[]).map((handlersKey) => {
 		return handlers[handlersKey].handler(() => getValue(handlersKey, optionsRef));
@@ -178,4 +195,20 @@ export const createStaticHandlers = <
 	}
 
 	return staticHandlers;
+};
+
+export const mapSelectedOptions = (selectedOptions) => {
+	const keys = Object.keys(selectedOptions);
+
+	return keys.reduce((acc, key) => {
+		const [group, option] = key.split("-");
+
+		if (acc[group]) {
+			acc[group][option] = selectedOptions[key];
+		} else {
+			acc[group] = { [option]: selectedOptions[key] };
+		}
+
+		return acc;
+	}, {});
 };

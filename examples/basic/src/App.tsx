@@ -9,35 +9,17 @@ import { PersonaDevTools } from "../../src/main";
 import "./App.css";
 
 import axios from "axios";
+import { useGetTodos, usePostTodo } from "./api/todo/todo";
 import PersonasConfig from "./config/personas";
+import { appQueryClient } from "./config/queryClient";
 import { handlers } from "./mocks/handlers";
 
-const queryClient = new QueryClient();
-
 const Todos = () => {
-	// Access the client
-	const queryClient = useQueryClient();
-
 	// Queries
-	const query = useQuery({
-		queryKey: ["todos"],
-		queryFn: async () => {
-			const res = (await axios.get("http://localhost:4000/todos")).data;
-
-			return res;
-		},
-	});
+	const query = useGetTodos();
 
 	// Mutations
-	const mutation = useMutation({
-		mutationFn: async () => {
-			await axios.post("/todos", { name: "my new todo", completed: false });
-		},
-		onSuccess: () => {
-			// Invalidate and refetch
-			queryClient.invalidateQueries({ queryKey: ["todos"] });
-		},
-	});
+	const mutation = usePostTodo();
 
 	return (
 		<div>
@@ -70,7 +52,8 @@ const Homepage = () => {
 
 			<PersonaDevTools
 				handlers={handlers}
-				onHandlerUpdate={(options) => {
+				onHandlerUpdate={async (options) => {
+					await queryClient.cancelQueries();
 					queryClient.invalidateQueries();
 				}}
 			/>
@@ -80,7 +63,7 @@ const Homepage = () => {
 
 function App() {
 	return (
-		<QueryClientProvider client={queryClient}>
+		<QueryClientProvider client={appQueryClient}>
 			<Homepage />
 		</QueryClientProvider>
 	);

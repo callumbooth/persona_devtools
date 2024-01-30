@@ -81,13 +81,22 @@ export const mapHandlersToSetup = <
 export const createStaticHandlers = <
 	Keys,
 	H extends {
-		[K in keyof Keys]: withOptionReturn;
+		[K in keyof Keys]: withOptionReturn<
+			Schema,
+			MyRequestHandler,
+			ReturnType<H[K]["getResponse"]>
+		>;
 	},
 >(
 	handlers: H,
 	config: inferOptions<H>,
 ) => {
-	const staticHandlers = {} as H;
+	const staticHandlers = {} as {
+		[K in keyof H]: {
+			getResponse: () => ReturnType<H[K]["getResponse"]>;
+			handler: H[K]["handler"];
+		};
+	};
 
 	//go through each handler
 	//go through each possible response
@@ -109,7 +118,10 @@ export const createStaticHandlers = <
 		// //clone the existing function
 		const newFn = handlers[handlerKey].handler.bind({});
 
-		staticHandlers[handlerKey] = {} as H[keyof H];
+		staticHandlers[handlerKey] = {} as {
+			getResponse: () => any;
+			handler: () => any;
+		};
 
 		staticHandlers[handlerKey].getResponse = () => actualResponse;
 		staticHandlers[handlerKey].handler = () => {
@@ -118,7 +130,9 @@ export const createStaticHandlers = <
 	}
 
 	return {
-		handlers: mapHandlersToSetup(staticHandlers, { current: config }),
+		handlers: mapHandlersToSetup(staticHandlers as unknown as H, {
+			current: config,
+		}),
 		config: staticHandlers,
 	};
 };

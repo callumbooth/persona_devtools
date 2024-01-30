@@ -17,8 +17,9 @@ const RenderComponent = () => {
 
 describe("Todos tests", () => {
 	it("should show a list of todos", async () => {
+		const res = staticHandlers.config.todos.getResponse();
 		RenderComponent();
 
-		expect(await screen.findByText("my first todo")).not.toBeNull();
+		expect(await screen.findByText(res.data[0].name)).not.toBeNull();
 	});
 });

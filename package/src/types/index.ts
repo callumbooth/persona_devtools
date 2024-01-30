@@ -1,5 +1,4 @@
-import { HookReturnType } from "leva/dist/declarations/src/useControls";
-import { Schema } from "leva/src/types/public";
+import { Schema, SchemaToValues } from "leva/src/types/public";
 import { HttpHandler } from "msw";
 import { StartOptions } from "msw/browser";
 
@@ -12,7 +11,7 @@ export type inferOptions<
 		}
 	>,
 > = {
-	[Key in keyof T]: HookReturnType<T[Key]["options"], T[Key]["options"]>;
+	[Key in keyof T]: SchemaToValues<T[Key]["options"]>;
 };
 
 export type PersonaConfig<H> = {

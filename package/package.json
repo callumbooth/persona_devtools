@@ -25,7 +25,6 @@
     "@types/node": "^20.11.7",
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
-    "@vitejs/plugin-react-swc": "^3.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "msw": "^2.1.5",
@@ -43,6 +42,7 @@
   "files": [
     "dist"
   ],
+  "types": "./dist/persona_devtools.d.ts",
   "main": "./dist/persona_devtools.umd.cjs",
   "module": "./dist/persona_devtools.js",
   "exports": {

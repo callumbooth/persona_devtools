@@ -1,5 +1,5 @@
 import { http, HttpResponse, passthrough } from "msw";
-import { mapHandlersToSetup, withOptions } from "persona_devtools";
+import { createStaticHandlers, withOptions } from "persona_devtools";
 import { faker } from "seed-utils";
 import { Todo } from "../api/todo/types";
 
@@ -18,7 +18,6 @@ export const handlers = {
 			amount: 1,
 		},
 		(config) => {
-			console.log("original res");
 			return Array.from({ length: config.amount }, (_) => createTodo());
 		},
 		(getResponse) => {
@@ -35,11 +34,6 @@ export const handlers = {
 	),
 };
 
-export const mappedHandlers = mapHandlersToSetup(handlers, {
-	current: {
-		todos: {
-			dataset: "a",
-			amount: 2,
-		},
-	},
+export const staticHandlers = createStaticHandlers(handlers, {
+	todos: { dataset: "b", amount: 2 },
 });

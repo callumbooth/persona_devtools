@@ -1,4 +1,5 @@
-import { add, isFuture } from "date-fns";
+import add from "date-fns/add";
+import isFuture from "date-fns/isFuture";
 
 export const isBrowser = () => typeof window !== "undefined";
 

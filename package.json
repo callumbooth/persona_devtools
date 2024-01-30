@@ -6,7 +6,6 @@
     "lint:tsc": "tsc",
     "check:ci": "biome ci ./package ./examples"
   },
-  "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "1.5.3",
     "typescript": "^5.2.2"

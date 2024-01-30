@@ -19,6 +19,14 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "seed-utils": ["./src/test/seed-utils.ts"],
+      "@/*": ["./*"],
+    },
+
+    "types": ["vitest/globals"],
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

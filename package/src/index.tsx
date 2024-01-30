@@ -86,8 +86,6 @@ const DexoryDevTools = <
 					dvdt: JSON.stringify(config),
 				});
 
-				console.log(baseUrl + "?" + params.toString());
-
 				void copy(baseUrl + "?" + params.toString());
 			}),
 		},

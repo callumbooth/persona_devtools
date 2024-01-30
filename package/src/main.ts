@@ -1,5 +1,5 @@
 import DexoryDevTools from "./index";
-export * from "./utils";
-export * from "./seeding";
+export { withOptions, mapHandlersToSetup, createStaticHandlers } from "./utils";
+export { isBrowser, findOrCreateSeedKey } from "./seeding";
 
 export { DexoryDevTools as PersonaDevTools };

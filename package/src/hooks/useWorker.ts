@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { http, HttpHandler, passthrough } from "msw";
+import { HttpHandler } from "msw";
 import { SetupWorker, StartOptions, setupWorker } from "msw/browser";
 
 import { Schema } from "leva/src/types";
@@ -72,9 +72,7 @@ export const useWorker = <
 		if (workerRef.current) {
 			const mappedHandlers = mapHandlersToSetup(handlers, optionsRef);
 
-			workerRef.current.resetHandlers(
-				...[...mappedHandlers, http.get("*", () => passthrough())],
-			);
+			workerRef.current.resetHandlers(...mappedHandlers);
 		}
 	}, [handlers]);
 
@@ -83,9 +81,7 @@ export const useWorker = <
 		if (workerInitialised.current === false) {
 			const mappedHandlers = mapHandlersToSetup(handlers, optionsRef);
 
-			workerRef.current = setupWorker(
-				...[...mappedHandlers, http.get("*", () => passthrough())],
-			);
+			workerRef.current = setupWorker(...mappedHandlers);
 
 			workerInitialised.current = true;
 		}

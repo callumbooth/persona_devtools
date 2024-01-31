@@ -1,5 +1,5 @@
+import { createStaticHandlers, withOptions } from "@persona-ui/msw";
 import { http, HttpResponse, passthrough } from "msw";
-import { createStaticHandlers, withOptions } from "persona_devtools";
 import { faker } from "seed-utils";
 import { Todo } from "../api/todo/types";
 

@@ -1,5 +1,5 @@
 import { Faker, faker } from "@faker-js/faker";
-import { findOrCreateSeedKey } from "persona_devtools";
+import { findOrCreateSeedKey } from "@persona-ui/seeding";
 
 const seedKey = findOrCreateSeedKey(undefined);
 

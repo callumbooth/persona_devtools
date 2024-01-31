@@ -1,5 +1,5 @@
+import { PersonaDevTools } from "@persona-ui/msw";
 import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { PersonaDevTools } from "persona_devtools";
 import "./App.css";
 
 import { useGetTodos, usePostTodo } from "./api/todo/todo";

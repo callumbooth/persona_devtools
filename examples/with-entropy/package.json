@@ -9,7 +9,8 @@
   "dependencies": {
     "@tanstack/react-query": "^5.17.19",
     "axios": "^1.6.7",
-    "persona_devtools": "workspace:*",
+    "@persona-ui/msw": "workspace:*",
+    "@persona-ui/seeding": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

@@ -20,15 +20,15 @@ importers:
 
   examples/basic:
     dependencies:
+      '@persona-ui/msw':
+        specifier: workspace:*
+        version: link:../../packages/msw
       '@tanstack/react-query':
         specifier: ^5.17.19
         version: 5.17.19(react@18.2.0)
       axios:
         specifier: ^1.6.7
         version: 1.6.7
-      persona_devtools:
-        specifier: workspace:*
-        version: link:../../packages/msw
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -57,15 +57,18 @@ importers:
 
   examples/with-entropy:
     dependencies:
+      '@persona-ui/msw':
+        specifier: workspace:*
+        version: link:../../packages/msw
+      '@persona-ui/seeding':
+        specifier: workspace:*
+        version: link:../../packages/seeding
       '@tanstack/react-query':
         specifier: ^5.17.19
         version: 5.17.19(react@18.2.0)
       axios:
         specifier: ^1.6.7
         version: 1.6.7
-      persona_devtools:
-        specifier: workspace:*
-        version: link:../../packages/msw
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -115,15 +118,18 @@ importers:
 
   examples/with-tests:
     dependencies:
+      '@persona-ui/msw':
+        specifier: workspace:*
+        version: link:../../packages/msw
+      '@persona-ui/seeding':
+        specifier: workspace:*
+        version: link:../../packages/seeding
       '@tanstack/react-query':
         specifier: ^5.17.19
         version: 5.17.19(react@18.2.0)
       axios:
         specifier: ^1.6.7
         version: 1.6.7
-      persona_devtools:
-        specifier: workspace:*
-        version: link:../../packages/msw
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -164,61 +170,6 @@ importers:
       vitest:
         specifier: ^1.2.1
         version: 1.2.2(jsdom@24.0.0)
-
-  package:
-    dependencies:
-      date-fns:
-        specifier: ^3.3.1
-        version: 3.3.1
-      leva:
-        specifier: ^0.9.35
-        version: 0.9.35(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
-      lucide-react:
-        specifier: ^0.316.0
-        version: 0.316.0(react@18.2.0)
-      usehooks-ts:
-        specifier: ^2.10.0
-        version: 2.10.0(react-dom@18.2.0)(react@18.2.0)
-    devDependencies:
-      '@testing-library/react':
-        specifier: ^14.1.2
-        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
-      '@types/node':
-        specifier: ^20.11.7
-        version: 20.11.10
-      '@types/react':
-        specifier: ^18.2.43
-        version: 18.2.48
-      '@types/react-dom':
-        specifier: ^18.2.17
-        version: 18.2.18
-      '@vitejs/plugin-react-swc':
-        specifier: ^3.5.0
-        version: 3.5.0(vite@5.0.12)
-      jsdom:
-        specifier: ^24.0.0
-        version: 24.0.0
-      msw:
-        specifier: ^2.1.5
-        version: 2.1.5(typescript@5.3.3)
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      vite:
-        specifier: ^5.0.8
-        version: 5.0.12(@types/node@20.11.10)
-      vite-plugin-dts:
-        specifier: ^3.7.2
-        version: 3.7.2(@types/node@20.11.10)(typescript@5.3.3)(vite@5.0.12)
-      vite-tsconfig-paths:
-        specifier: ^4.3.1
-        version: 4.3.1(typescript@5.3.3)(vite@5.0.12)
-      vitest:
-        specifier: ^1.2.1
-        version: 1.2.2(@types/node@20.11.10)(jsdom@24.0.0)
 
   packages/msw:
     dependencies:

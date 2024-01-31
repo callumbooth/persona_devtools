@@ -1,7 +1,7 @@
 import { RequestHandler } from "msw";
 
 import { Schema, SchemaToValues } from "leva/src/types";
-import { StringKeys, inferOptions } from "../types";
+import { StringKeys } from "../types";
 
 interface MyRequestHandler extends RequestHandler {}
 
@@ -54,7 +54,8 @@ export const withOptions = <
 
 const getValue = <
 	C extends Record<string, SchemaToValues<Schema>>,
-	T extends React.MutableRefObject<C>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	T extends React.MutableRefObject<any>,
 >(
 	key: keyof C,
 	config: T,
@@ -69,7 +70,8 @@ export const mapHandlersToSetup = <
 	Keys,
 >(
 	handlers: H,
-	optionsRef: React.MutableRefObject<inferOptions<H>>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	optionsRef: React.MutableRefObject<{ [Key in keyof H]: Record<string, any> }>,
 ) => {
 	return (Object.keys(handlers) as StringKeys<H>[]).map((handlersKey) => {
 		return handlers[handlersKey].handler(() => {
@@ -89,11 +91,15 @@ export const createStaticHandlers = <
 	},
 >(
 	handlers: H,
-	config: inferOptions<H>,
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	config: { [Key in keyof H]: Record<string, any> },
 ) => {
 	const staticHandlers = {} as {
 		[K in keyof H]: {
-			getResponse: () => ReturnType<H[K]["getResponse"]>;
+			getResponse: () => {
+				data: ReturnType<H[K]["getResponse"]>;
+				passthrough: boolean;
+			};
 			handler: H[K]["handler"];
 		};
 	};
@@ -118,14 +124,11 @@ export const createStaticHandlers = <
 		// //clone the existing function
 		const newFn = handlers[handlerKey].handler.bind({});
 
-		staticHandlers[handlerKey] = {} as {
-			getResponse: () => any;
-			handler: () => any;
-		};
-
-		staticHandlers[handlerKey].getResponse = () => actualResponse;
-		staticHandlers[handlerKey].handler = () => {
-			return newFn(() => actualResponse);
+		staticHandlers[handlerKey] = {
+			getResponse: () => actualResponse,
+			handler: () => {
+				return newFn(() => actualResponse);
+			},
 		};
 	}
 

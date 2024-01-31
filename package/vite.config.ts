@@ -1,13 +1,14 @@
 /// <reference types="vitest" />
 
 import { resolve } from "path";
+import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [tsconfigPaths(), dts({ rollupTypes: true })],
+	plugins: [react(), tsconfigPaths(), dts({ rollupTypes: true })],
 	build: {
 		lib: {
 			// Could also be a dictionary or array of multiple entry points
@@ -31,7 +32,14 @@ export default defineConfig({
 			},
 		},
 	},
+
 	test: {
 		globals: true,
+		environment: "jsdom",
+		root: __dirname,
+		setupFiles: ["./vitest.setup.ts"],
+		alias: {
+			"msw/browser": "msw/node",
+		},
 	},
 });

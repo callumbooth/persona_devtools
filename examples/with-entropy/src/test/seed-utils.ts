@@ -7,7 +7,7 @@ console.log("--SEED KEY---", seedKey);
 
 function withCustomModule<
 	S extends Faker,
-	//eslint-disable-next-line @typescript-eslint/no-explicit-any
+	// biome-ignore lint/suspicious/noExplicitAny: any is required
 	T extends Record<string, (...args: any[]) => any>,
 	U extends S & { custom: T },
 >(base: S, value: T): U {

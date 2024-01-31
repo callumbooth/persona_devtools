@@ -7,7 +7,8 @@ export type inferOptions<
 		string,
 		{
 			options: Schema;
-			handler: unknown;
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			handler: any;
 		}
 	>,
 > = {
@@ -17,7 +18,8 @@ export type inferOptions<
 export type PersonaConfig<H> = {
 	readonly [key: string]: {
 		label: string;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		user?: Record<string, any>;
 		options: H;
 	};

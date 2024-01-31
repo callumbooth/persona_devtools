@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { HttpHandler } from "msw";
 import { SetupWorker, StartOptions, setupWorker } from "msw/browser";
 
-import { Schema } from "leva/src/types";
+import { Schema, SchemaToValues } from "leva/src/types";
 import { inferOptions } from "../types";
 import { mapHandlersToSetup, mapSelectedOptions } from "../utils";
 
-interface UseWorkerConfig<O extends Record<string, Schema>> {
+interface UseWorkerConfig<O extends Record<string, SchemaToValues<Schema>>> {
 	startOptions?: StartOptions;
 	onHandlerUpdate?: (options: O) => void;
 }
@@ -29,7 +29,7 @@ export const useWorker = <
 	enabled: boolean,
 ) => {
 	const workerRef = useRef<SetupWorker>();
-	const optionsRef = useRef(mapSelectedOptions(selectedOptions) as O);
+	const optionsRef = useRef(mapSelectedOptions(selectedOptions));
 	const workerInitialised = useRef(false);
 	const prevEnabled = useRef(enabled);
 	const [isReady, setIsReady] = useState(false);
@@ -40,7 +40,7 @@ export const useWorker = <
 	// biome-ignore lint/correctness/useExhaustiveDependencies:
 	useEffect(() => {
 		if (workerInitialised.current !== false && enabled) {
-			const mapped = mapSelectedOptions(selectedOptions) as O;
+			const mapped = mapSelectedOptions(selectedOptions);
 			optionsRef.current = mapped;
 
 			onHandlerUpdate?.(mapped);

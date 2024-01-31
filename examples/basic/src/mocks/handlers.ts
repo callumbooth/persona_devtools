@@ -21,20 +21,21 @@ export const handlers = {
 			dataset: { options: { a: "a", b: "b" } as const },
 			amount: 1,
 		},
-		(getValues) => {
+		(config) => {
+			return Array.from({ length: config.amount }, (_, i) => ({
+				...data[config.dataset],
+				id: i,
+			}));
+		},
+		(getResponse) => {
 			return http.get("http://localhost:4000/todos", () => {
-				const values = getValues();
+				const res = getResponse();
 
-				if (values.passthrough) {
+				if (res.passthrough) {
 					return passthrough();
 				}
 
-				return HttpResponse.json(
-					Array.from({ length: values.amount }, (_, i) => ({
-						...data[values.dataset],
-						id: i,
-					})),
-				);
+				return HttpResponse.json(res.data);
 			});
 		},
 	),

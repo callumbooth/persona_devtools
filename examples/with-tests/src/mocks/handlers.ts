@@ -35,5 +35,5 @@ export const handlers = {
 };
 
 export const staticHandlers = createStaticHandlers(handlers, {
-	todos: { dataset: "b", amount: 2 },
+	todos: { dataset: "a", amount: 1 },
 });

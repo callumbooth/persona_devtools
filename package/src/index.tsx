@@ -49,13 +49,13 @@ const DexoryDevTools = <
 								label: optionKey,
 								...data,
 								render: (get) => get(`handlers.${key}.${key}-passthrough`) === false,
-							};
+							} as Schema[string];
 						} else {
 							acc2[`${key}-${optionKey}`] = {
 								label: optionKey,
 								value: data,
 								render: (get) => get(`handlers.${key}.${key}-passthrough`) === false,
-							};
+							} as Schema[string];
 						}
 						return acc2;
 					}, {} as Schema),
@@ -69,7 +69,7 @@ const DexoryDevTools = <
 		| {
 				enabled: boolean;
 				handlers: {
-					[x: string]: any;
+					[x: string]: unknown;
 				};
 		  }
 		| undefined
@@ -86,7 +86,7 @@ const DexoryDevTools = <
 					dvdt: JSON.stringify(config),
 				});
 
-				void copy(baseUrl + "?" + params.toString());
+				void copy(`${baseUrl}?${params.toString()}`);
 			}),
 		},
 		[handlerData],

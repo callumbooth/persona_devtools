@@ -1,58 +1,40 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* biome-supress */
 import { render } from "@testing-library/react";
 
 import DexoryDevTools from ".";
 import { DexoryDevToolsProps } from "./types";
-import { withOption } from "./utils";
+import { withOptions } from "./utils";
 
-vi.mock("msw", () => ({
-	setupWorker: () => ({ start: vi.fn(), stop: vi.fn() }),
-}));
+const handlers = {
+	requestA: withOptions(
+		{ mockA: true, mockB: false },
+		() => {},
+		// biome-ignore lint/suspicious/noExplicitAny: allow any
+		() => vi.fn() as any,
+	),
+	requestB: withOptions(
+		{ mockA: true, mockB: false },
+		() => {},
+		// biome-ignore lint/suspicious/noExplicitAny: allow any
+		() => vi.fn() as any,
+	),
+};
 
 const RenderComponent = (
 	props?: Partial<
 		DexoryDevToolsProps<
-			["requestA", "requestB"],
-			any,
 			{
-				readonly [key: string]: {
-					label: string;
-					user: Record<string, any>;
-					options: {
-						requestA: string;
-						requestB: string;
-					};
-				};
-			}
+				requestA: { mockA: boolean; mockB: boolean };
+				requestB: { mockA: boolean; mockB: boolean };
+			},
+			// biome-ignore lint/suspicious/noExplicitAny: allow any
+			any
 		>
 	>,
 ) => {
 	return render(
 		<DexoryDevTools
-			onPersonaUpdate={vi.fn()}
-			personas={{
-				personaA: {
-					label: "Persona A",
-					user: {},
-					options: {
-						requestA: "mockA",
-						requestB: "mockB",
-					},
-				},
-				custom: {
-					label: "custom",
-					user: {},
-					options: {
-						requestA: "mockA",
-						requestB: "mockB",
-					},
-				},
-			}}
-			defaultPersona={"custom"}
-			handlers={{
-				requestA: withOption({ mockA: true, mockB: false }, () => vi.fn()),
-				requestB: withOption({ mockA: true, mockB: false }, () => vi.fn()),
-			}}
+			handlers={handlers}
 			onHandlerUpdate={vi.fn()}
 			initialIsEnabled={true}
 			{...props}

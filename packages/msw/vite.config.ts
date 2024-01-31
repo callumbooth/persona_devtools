@@ -20,7 +20,7 @@ export default defineConfig({
 		rollupOptions: {
 			// make sure to externalize deps that shouldn't be bundled
 			// into your library
-			external: ["react", "react-dom", "react/jsx-runtime"],
+			external: ["react", "react-dom", "react/jsx-runtime", "msw/browser"],
 			output: {
 				// Provide global variables to use in the UMD build
 				// for externalized deps
@@ -28,6 +28,7 @@ export default defineConfig({
 					react: "React",
 					"react-dom": "React-dom",
 					"react/jsx-runtime": "jsxRuntime",
+					"msw/browser": "mswBrowser",
 				},
 			},
 		},

@@ -12,5 +12,8 @@ export default defineConfig({
 		root: __dirname,
 		environment: "jsdom",
 		setupFiles: ["./vitest.setup.ts"],
+		alias: {
+			"msw/browser": "msw/node",
+		},
 	},
 });

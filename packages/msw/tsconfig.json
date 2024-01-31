@@ -21,6 +21,6 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["vitest/globals"]
   },
-  "include": ["src"],
+  "include": ["src", "../seeding/src/index.test.ts", "../seeding/src/index.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

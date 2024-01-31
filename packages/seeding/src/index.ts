@@ -1,7 +1,7 @@
 import { add } from "date-fns/add";
 import { isFuture } from "date-fns/isFuture";
 
-export const isBrowser = () => typeof window !== "undefined";
+const isBrowser = () => typeof window !== "undefined";
 
 export interface SeedKeyConfig {
 	expiry: string;

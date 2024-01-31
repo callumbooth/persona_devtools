@@ -1,14 +1,13 @@
 {
-  "name": "persona_devtools",
+  "name": "@persona-ui/msw",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "author": "",
+  "author": "Callum Booth",
   "license": "ISC",
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build",
-    "preview": "vite preview",
     "format": "biome format --write ./src",
     "lint": "biome lint ./src",
     "lint:tsc": "tsc",

@@ -12,7 +12,10 @@ export default defineConfig({
 	build: {
 		lib: {
 			// Could also be a dictionary or array of multiple entry points
-			entry: resolve(__dirname, "src/main.ts"),
+			entry: [
+				resolve(__dirname, "src/browser.ts"),
+				resolve(__dirname, "src/main.ts"),
+			],
 			name: "PersonaDevtools",
 			// the proper extensions will be added
 			fileName: "persona_devtools",

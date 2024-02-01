@@ -49,8 +49,14 @@
   "module": "./dist/persona_devtools.js",
   "exports": {
     ".": {
+      "import": "./dist/persona_devtools2.js",
+      "require": "./dist/persona_devtools2.umd.cjs",
+      "types": "./dist/main.d.ts"
+    },
+    "./browser": {
       "import": "./dist/persona_devtools.js",
-      "require": "./dist/persona_devtools.umd.cjs"
+      "require": "./dist/persona_devtools.umd.cjs",
+      "types": "./dist/browser.d.ts"
     }
   }
 }
